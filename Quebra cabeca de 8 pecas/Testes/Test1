@@ -1,0 +1,124 @@
+import numpy as np
+import pandas as pd
+
+def verifica(teste):
+    matrix = teste
+    erro = 0
+    count = 0
+    for i in range(3):
+        for j in range(3):
+            if matrix[i, j] != count:
+                erro = 1
+        count = count+1
+
+    if erro == 0:
+        print("achou")
+    else:
+        print("n achou")
+
+def zero(teste):
+    matrix = teste
+    for i in range(3):
+        for j in range(3):
+            if matrix[i, j] == 0:
+                return (i, j)
+
+def caminhos(teste, zeroi, zeroj):
+    matrix = teste
+    i = zeroi
+    j = zeroj
+    k = 0
+    count = 0
+    caminhos = np.array([])
+    #print(i, j)
+    if i+1 < 3:
+        caminhos = np.insert(caminhos, k, (i+1, j))
+        k = k + 2
+        count = count + 1
+        #print(caminhos)
+        #print("\n1")
+
+    if i-1 > -1:
+        caminhos = np.insert(caminhos, k, (i-1, j))
+        k = k + 2
+        count = count + 1
+        #print(caminhos)
+        #print("\n2")
+
+    if j+1 < 3:
+        caminhos = np.insert(caminhos, k, (i, j+1))
+        k = k + 2
+        count = count + 1
+        #print(caminhos)
+        #print("\n3")
+
+    if j-1 > -1:
+        caminhos = np.insert(caminhos, k, (i, j-1))
+        k = k + 2
+        count = count + 1
+        #print(caminhos)
+        #print("\n4")
+
+    return caminhos, count
+
+def troca(teste, way, zeroi, zeroj, count):
+    matrix = teste
+    caminhos = way
+    i = zeroi
+    j = zeroj
+    k = 0
+    l = 1
+    tam = count
+    print(tam)
+    print(i, j)
+    for p in range(tam):
+        matrixAux = np.copy(matrix)
+        a = int(caminhos[k])
+        b = int(caminhos[l])
+        aux = matrixAux[i, j]
+        matrixAux[i, j] = matrixAux[a, b]
+        matrixAux[a, b] = aux
+        k = k + 2
+        l = l + 2
+        print(matrixAux)
+        print("\n")
+        ****************************************************
+
+repeat = np.array([])
+while (len(repeat) < 9):
+    flag = 0
+    x = int(np.random.uniform(0, 9))
+
+    if x == 9:
+        x = 8
+
+    #print(x)
+    for j in range(len(repeat)):
+        if x == repeat[j]:
+            flag = 1
+
+    if flag == 0:
+        repeat = np.insert(repeat, 0, x)
+    #print(repeat)
+
+matrix = np.zeros((3, 3))
+
+k = 0
+for i in range(3):
+    for j in range(3):
+        matrix[i, j] = repeat[k]
+        k = k+1
+verifica(matrix)
+print(matrix)
+[zeroi, zeroj] = zero(matrix)
+[caminhos, count] = caminhos(matrix, zeroi, zeroj)
+print("\n")
+print(caminhos)
+print("\n")
+troca(matrix, caminhos, zeroi, zeroj, count)
+
+
+
+
+
+#0,3,7,4,2,2,1,6,6,8,7
