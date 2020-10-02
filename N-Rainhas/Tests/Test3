@@ -1,0 +1,186 @@
+import numpy as np
+
+
+def verificaRepetido(vetorRainha, verificados):
+    verificados = np.array(verificados)
+
+    for i in range(len(vetorRainha)):
+        i = np.array(i)
+        for j in verificados:
+            if vetorRainha[i].all() == np.array(j).all():
+                vetorRainha.pop(i)
+    return vetorRainha
+
+
+def countRainha(matrix):
+    return (np.array(matrix).flatten().tolist().count(2))
+
+
+def printMatrix(matrix):
+    count = 0
+    # matrix = np.unique(matrix, axis=0)
+    for i in range(len(matrix)):
+        print(matrix[i], "\n")
+        count = count + 1
+    print("Matrizes validas: ", count)
+
+
+def setStart(matrix):
+    x = int(np.random.randint(0, 8))
+    y = int(np.random.randint(0, 8))
+    # print(x, y)
+    matrix[x, y] = 2
+    [largura, altura] = matrix.shape
+    matrix = marcaLocal(matrix, x, y, largura, altura)
+    vetorRainha.insert(0, matrix)
+    return matrix
+
+
+def verificaPos(matrix, vetorRainha):
+    matrixSafe = np.copy(matrix)
+    [largura, altura] = matrix.shape
+    for i in range(altura):
+        for j in range(largura):
+            if matrix[i, j] == 1:
+                matrix[i, j] = 2
+                vetorRainha.insert(0, marcaLocal(matrix, i, j, largura, altura))
+                matrix = np.copy(matrixSafe)
+
+
+
+    return verificaRepetido(vetorRainha,verificados)
+
+
+
+def marcaLocal(matrix, i, j, largura, altura):
+    matrix = np.matrix(np.copy(matrix))
+    largura = largura
+    altura = altura
+    i = i
+    j = j
+
+    # Cruz
+    if (i + 1) < 8:
+        matrix[(i + 1), j] = 0
+
+    if (i - 1) > -1:
+        matrix[(i - 1), j] = 0
+
+    if (j + 1) < 8:
+        matrix[i, (j + 1)] = 0
+
+    if (j - 1) > -1:
+        matrix[i, (j - 1)] = 0
+
+    # Bordas
+    if (i + 1) < 8 and (j + 1) < 8:
+        matrix[(i + 1), (j + 1)] = 0
+
+    if (i + 1) < 8 and (j - 1) > -1:
+        matrix[(i + 1), (j - 1)] = 0
+
+    if (i - 1) > -1 and (j + 1) < 8:
+        matrix[(i - 1), (j + 1)] = 0
+
+    if (i - 1) > -1 and (j - 1) > -1:
+        matrix[(i - 1), (j - 1)] = 0
+
+    # Linhas
+    iaux = i + 1
+    jaux = j
+    while iaux < 8:
+        matrix[iaux, j] = 0
+        iaux = iaux + 1
+
+    iaux = i
+    jaux = j + 1
+    while jaux < 8:
+        matrix[i, jaux] = 0
+        jaux = jaux + 1
+
+    iaux = i - 1
+    jaux = j
+    while iaux > -1:
+        matrix[iaux, j] = 0
+        iaux = iaux - 1
+
+    iaux = i
+    jaux = j - 1
+    while jaux > -1:
+        matrix[i, jaux] = 0
+        jaux = jaux - 1
+
+    # Diagonal
+    iaux = i + 1
+    jaux = j + 1
+    while iaux < 8 and jaux < 8:
+        # print("a", iaux, jaux, "\n")
+        matrix[iaux, jaux] = 0
+        # print("a\n", matrix)
+        iaux = iaux + 1
+        jaux = jaux + 1
+
+    iaux = i + 1
+    jaux = j - 1
+    while iaux < 8 and jaux > -1:
+        # print("b", iaux, jaux, "\n")
+        matrix[iaux, jaux] = 0
+        # print("b\n", matrix)
+        iaux = iaux + 1
+        jaux = jaux - 1
+
+    iaux = i - 1
+    jaux = j + 1
+    while iaux > -1 and jaux < 8:
+        # print("c", iaux, jaux, "\n")
+        matrix[iaux, jaux] = 0
+        # print("c\n", matrix)
+        iaux = iaux - 1
+        jaux = jaux + 1
+
+    iaux = i - 1
+    jaux = j - 1
+    while iaux > -1 and jaux > -1:
+        # print("d", iaux, jaux, "\n")
+        matrix[iaux, jaux] = 0
+        # print("d\n", matrix)
+        iaux = iaux - 1
+        jaux = jaux - 1
+
+    return matrix
+
+
+if __name__ == '__main__':
+    matrix = np.ones((8, 8)).astype(int)
+
+    # 0 espaço de ataque
+    # 1 vazio
+    # 2 rainha
+
+    vetorRainha = []
+    # matrix = setStart(matrix)
+    vetorMatrixSafe = []
+    verificados = []
+    vetorRainha.insert(0, matrix)
+    print(matrix)
+    flag = 0
+    while (len(vetorRainha) != 0 or flag == 0):
+        flag = 1
+        matrixSafe = vetorRainha[0].copy()
+        vetorRainha.pop(0)
+        # print(printMatrix(vetorRainha))
+        verificados.append(matrixSafe)
+        vetorRainha = verificaPos(matrixSafe, vetorRainha)
+
+        if countRainha(matrixSafe) == 8:
+            vetorMatrixSafe.insert(0, matrixSafe.flatten())
+            # print(len(vetorMatrixSafe))
+
+        # vetorRainhas = np.unique(vetorRainha, axis=0)
+        print(len(vetorMatrixSafe))
+
+    # printMatrix(vetorRainha)
+    # printMatrix(vetorMatrixSafe)
+    vetorMatrixSafe = np.unique(vetorMatrixSafe, axis=0)
+    vetorMatrixSafe = vetorMatrixSafe.reshape((len(vetorMatrixSafe), 8, 8))
+    printMatrix(vetorMatrixSafe)

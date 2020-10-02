@@ -1,0 +1,154 @@
+import numpy as np
+
+def rainhaExistente(matrix, i, largura):
+    largura = largura
+    matrix = matrix
+    i = i
+    for j in range(largura):
+        if matrix[i, j] == 2:
+            return True
+
+    return False
+
+def setStart(matrix):
+    x = int(np.random.uniform(0, 8))
+    y = int(np.random.uniform(0, 8))
+    print(x, y)
+    matrix[x, y] = 2
+    [largura, altura] = matrix.shape
+    matrix = marcaLocal(matrix, x, y, largura, altura)
+    return matrix
+
+
+def marcaLocal(matrix, i, j, largura, altura):
+    matrix = np.copy(matrix)
+    largura = largura
+    altura = altura
+    i = i
+    j = j
+
+    # Cruz
+    if (i + 1) < 8:
+        matrix[(i + 1), j] = 0
+
+    if (i - 1) > -1:
+        matrix[(i - 1), j] = 0
+
+    if (j + 1) < 8:
+        matrix[i, (j + 1)] = 0
+
+    if (j - 1) > -1:
+        matrix[i, (j - 1)] = 0
+
+    # Bordas
+    if (i + 1) < 8 and (j + 1) < 8:
+        matrix[(i + 1), (j + 1)] = 0
+
+    if (i + 1) < 8 and (j - 1) > -1:
+        matrix[(i + 1), (j - 1)] = 0
+
+    if (i - 1) > -1 and (j + 1) < 8:
+        matrix[(i - 1), (j + 1)] = 0
+
+    if (i - 1) > -1 and (j - 1) > -1:
+        matrix[(i - 1), (j - 1)] = 0
+
+    # Linhas
+    iaux = i + 1
+    jaux = j
+    while iaux < 8:
+        matrix[iaux, j] = 0
+        iaux = iaux + 1
+
+    iaux = i
+    jaux = j + 1
+    while jaux < 8:
+        matrix[i, jaux] = 0
+        jaux = jaux + 1
+
+    iaux = i - 1
+    jaux = j
+    while iaux > -1:
+        matrix[iaux, j] = 0
+        iaux = iaux - 1
+
+    iaux = i
+    jaux = j - 1
+    while jaux > -1:
+        matrix[i, jaux] = 0
+        jaux = jaux - 1
+
+    # Diagonal
+    iaux = i + 1
+    jaux = j + 1
+    while iaux < 8 and jaux < 8:
+        #print("a", iaux, jaux, "\n")
+        matrix[iaux, jaux] == 0
+        iaux = iaux + 1
+        jaux = jaux + 1
+
+    iaux = i + 1
+    jaux = j - 1
+    while iaux < 8 and jaux > -1:
+        #print("b", iaux, jaux, "\n")
+        matrix[iaux, jaux] == 0
+        iaux = iaux + 1
+        jaux = jaux - 1
+
+    iaux = i - 1
+    jaux = j + 1
+    while iaux > -1 and jaux < 8:
+        #print("c", iaux, jaux, "\n")
+        matrix[iaux, jaux] == 0
+        iaux = iaux - 1
+        jaux = jaux + 1
+
+    iaux = i - 1
+    jaux = j - 1
+    while iaux > -1 and jaux > -1:
+        #print("d", iaux, jaux, "\n")
+        matrix[iaux, jaux] == 0
+        iaux = iaux - 1
+        jaux = jaux - 1
+
+    return matrix
+
+flag = 0
+while flag == 0:
+    matrix = np.matrix([[1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 2, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 1, 1, 1, 1]])
+
+    # 0 espaço de ataque
+    # 1 vazio
+    # 2 rainha
+
+    count = 0
+    [largura, altura] = matrix.shape
+
+    matrix = setStart(matrix)
+    #print(matrix, "\n")
+
+
+    for i in range(altura):
+        j = int(np.random.uniform(0, 8))
+        if rainhaExistente(matrix, i, largura) == 0:
+            continue
+        while matrix[i, j] != 1:
+            j = int(np.random.uniform(0, 8))
+        matrix[i, j] = 2
+        matrix = marcaLocal(matrix, i, j, largura, altura)
+        count = count + 1
+
+
+    if count == 7:
+        flag = 1
+    else:
+        print("Erro Matrix: \n", matrix)
+
+print("Correct Matrix: \n", matrix)
